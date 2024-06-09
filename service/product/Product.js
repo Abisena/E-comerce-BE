@@ -5,20 +5,22 @@ export const createProduct = async (req, res) => {
     const { nama_product, price, img, description, categoryId } = req.body;
 
     const category = await prisma.category.findUnique({
-      where: { categoryId: parseInt(categoryId, 10) },
+      where: { categoryId: categoryId },
     });
 
     if (!category) {
       return res.status(400).json({ msg: "Invalid category ID" });
     }
 
+    const parsedPrice = price.toString();
+
     const product = await prisma.product.create({
       data: {
         nama_product,
-        price: parseFloat(price),
+        price: parsedPrice,
         img,
         description,
-        categoryId: parseInt(categoryId, 10),
+        categoryId,
       },
     });
 
