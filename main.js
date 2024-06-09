@@ -32,6 +32,7 @@ app.use(morgan("combined"));
 app.use(securityHeaders);
 app.use(limiter);
 app.use(requestLogger);
+app.set("trust proxy", 1);
 
 app.use(cors());
 

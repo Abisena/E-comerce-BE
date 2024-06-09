@@ -1,6 +1,6 @@
 import { prisma } from "../config/prisma.js";
 import { hashPassword, comparePassword } from "../utils/Hashing.js";
-import { generateToken } from "../utils/Token.js";
+import { generateToken, generateRefreshToken } from "../utils/Token.js";
 import { validateEmail, validatePassword } from "../utils/Validation.js";
 import { handleError } from "../utils/Handling.js";
 import { sendEmail } from "../utils/EmailService.js";
@@ -74,13 +74,21 @@ export const login = async (req, res) => {
     }
 
     const validPassword = await comparePassword(password, user.password);
+
     if (!validPassword) {
       return res.status(400).json({ msg: "Invalid email or password" });
     }
 
-    const token = generateToken(user.userId);
+    const accessToken = generateToken(user.userId);
+    const refreshToken = generateRefreshToken(user.userId);
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { refreshToken },
+    });
 
-    res.status(200).json({ msg: "Login successful", token });
+    res
+      .status(200)
+      .json({ msg: "Login successful", accessToken, refreshToken });
   } catch (err) {
     handleError(err, res);
   }
