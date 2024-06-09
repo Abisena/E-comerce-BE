@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       Int       @id @default(autoincrement())
+  username     String
+  email        String    @unique
+  password     String
+  refreshToken String?
+  role         Role      @default(User)
+  carts        Cart[]
+  orders       Order[]
+  addresses    Address[]
+  reviews      Review[]
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+}
+
+model Product {
+  productId    Int        @id @default(autoincrement())
+  categoryId   Int
+  nama_product String
+  price        String
+  img          String
+  description  String
+  category     Category   @relation(fields: [categoryId], references: [categoryId])
+  stoks        Stok[]
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+  reviews      Review[]
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+}
+
+model Category {
+  categoryId    Int      @id @default(autoincrement())
+  category_name String
+  products      Product[]
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model Cart {
+  cartId    Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [userId])
+  items     CartItem[]
+  createdAt DateTime  @default(now())
+}
+
+model CartItem {
+  cartItemId Int      @id @default(autoincrement())
+  cartId     Int
+  productId  Int
+  quantity   Int
+  cart       Cart     @relation(fields: [cartId], references: [cartId])
+  product    Product  @relation(fields: [productId], references: [productId])
+  createdAt  DateTime @default(now())
+}
+
+model Order {
+  orderId    Int         @id @default(autoincrement())
+  userId     Int
+  total      Float
+  status     OrderStatus
+  user       User        @relation(fields: [userId], references: [userId])
+  items      OrderItem[]
+  payment    Payment[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model OrderItem {
+  orderItemId Int      @id @default(autoincrement())
+  orderId     Int
+  productId   Int
+  quantity    Int
+  price       Float
+  order       Order    @relation(fields: [orderId], references: [orderId])
+  product     Product  @relation(fields: [productId], references: [productId])
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  reviewId   Int      @id @default(autoincrement())
+  userId     Int
+  productId  Int
+  rating     Int
+  comment    String
+  user       User     @relation(fields: [userId], references: [userId])
+  product    Product  @relation(fields: [productId], references: [productId])
+  createdAt  DateTime @default(now())
+}
+
+model Address {
+  addressId  Int      @id @default(autoincrement())
+  userId     Int
+  street     String
+  city       String
+  state      String
+  zipCode    String
+  country    String
+  user       User     @relation(fields: [userId], references: [userId])
+  createdAt  DateTime @default(now())
+}
+
+model Payment {
+  paymentId  Int        @id @default(autoincrement())
+  orderId    Int
+  amount     Float
+  method     PaymentMethod
+  status     PaymentStatus
+  order      Order      @relation(fields: [orderId], references: [orderId])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now())
+}
+
+model Stok {
+  stokId     Int       @id @default(autoincrement())
+  productId  Int
+  quantity   Int
+  product    Product   @relation(fields: [productId], references: [productId])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+enum Role {
+  Admin
+  User
+  Penjual
+}
+
+enum OrderStatus {
+  Pending
+  Shipped
+  Delivered
+  Cancelled
+}
+
+enum PaymentMethod {
+  CreditCard
+  PayPal
+  BankTransfer
+}
+
+enum PaymentStatus {
+  Pending
+  Completed
+  Failed
+}
