@@ -17,6 +17,14 @@ export const register = async (req, res) => {
       return res.status(400).json({ msg: "Password does not meet criteria" });
     }
 
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ msg: "Email is already in use" });
+    }
+
     const hashedPassword = await hashPassword(password);
     const userCount = await prisma.user.count();
     let userRole = "User";
@@ -41,7 +49,7 @@ export const register = async (req, res) => {
       },
     });
 
-    sendEmail(email, "Welcome!", "Thank you for registering!");
+    sendEmail(email, "Welcome!", "welcomeEmail.html", { username });
 
     res
       .status(201)

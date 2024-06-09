@@ -3,3 +3,5 @@
 {"level":"error"}
 {"level":"error"}
 {"level":"error"}
+{"level":"error"}
+{"clientVersion":"5.15.0","code":"P2002","level":"error","meta":{"modelName":"User","target":["email"]},"name":"PrismaClientKnownRequestError"}
