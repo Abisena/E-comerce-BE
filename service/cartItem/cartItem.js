@@ -1,4 +1,3 @@
-// src/controllers/cartItemController.js
 import { prisma } from "../../config/prisma.js";
 
 export const addToCart = async (req, res) => {

@@ -1,4 +1,3 @@
-// src/utils/emailService.js
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({

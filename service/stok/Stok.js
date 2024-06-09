@@ -1,4 +1,3 @@
-// src/controllers/stockController.js
 import { prisma } from "../../config/prisma.js";
 
 export const addStock = async (req, res) => {

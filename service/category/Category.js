@@ -1,4 +1,3 @@
-// src/controllers/categoryController.js
 import { prisma } from "../../config/prisma.js";
 
 export const createCategory = async (req, res) => {

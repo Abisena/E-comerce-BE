@@ -1,4 +1,3 @@
-// src/routes/orderItemRoutes.js
 import express from "express";
 import {
   addOrderItem,

@@ -1,4 +1,3 @@
-// src/controllers/orderItemController.js
 import { prisma } from "../../config/prisma.js";
 
 export const addOrderItem = async (req, res) => {

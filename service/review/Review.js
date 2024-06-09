@@ -1,4 +1,3 @@
-// src/controllers/reviewController.js
 import { prisma } from "../../config/prisma.js";
 
 export const addReview = async (req, res) => {

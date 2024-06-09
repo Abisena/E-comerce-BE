@@ -1,4 +1,4 @@
-// src/controllers/addressController.js
+
 import { prisma } from "../../config/prisma.js";
 
 export const addAddress = async (req, res) => {

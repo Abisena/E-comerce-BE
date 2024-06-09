@@ -1,5 +1,3 @@
-// src/utils/responseFormatter.js
-
 export const successResponse = (res, message, data) => {
   res.status(200).json({
     status: "success",

@@ -1,6 +1,6 @@
 import { register, login, logout } from "../service/Users.js";
 import { isAuthenticated } from "../middleware/isAuthorize.js";
-import { validateRegisterInput } from "../helpers/Validate.js";
+import { validateRegisterInput } from "../helpers/validate.js";
 import express from "express";
 const user = express.Router();
 

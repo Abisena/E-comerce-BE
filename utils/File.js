@@ -1,4 +1,3 @@
-// src/utils/fileUpload.js
 import multer from "multer";
 
 const storage = multer.diskStorage({

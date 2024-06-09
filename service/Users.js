@@ -9,20 +9,17 @@ export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
-    // Validate email format
     if (!validateEmail(email)) {
       return res.status(400).json({ msg: "Invalid email format" });
     }
 
-    // Validate password criteria
     if (!validatePassword(password)) {
       return res.status(400).json({ msg: "Password does not meet criteria" });
     }
 
-    // Hash the password
     const hashedPassword = await hashPassword(password);
     const userCount = await prisma.user.count();
-    let userRole = "User"; // Default role
+    let userRole = "User";
 
     if (userCount === 0) {
       userRole = "Admin";

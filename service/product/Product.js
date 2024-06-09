@@ -1,4 +1,3 @@
-// src/controllers/productController.js
 import { prisma } from "../../config/prisma.js";
 
 export const createProduct = async (req, res) => {

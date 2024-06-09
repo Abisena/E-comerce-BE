@@ -1,4 +1,3 @@
-// src/routes/addressRoutes.js
 import express from "express";
 import {
   addAddress,
