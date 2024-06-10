@@ -34,7 +34,17 @@ app.use(limiter);
 app.use(requestLogger);
 app.set("trust proxy", 1);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "*",
+    allowedHeaders: "*",
+    exposedHeaders: "*",
+    credentials: true,
+  })
+);
+
+// app.use(cors());
 
 app.use(userRoutes);
 app.use(productRoutes);
