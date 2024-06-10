@@ -3,7 +3,7 @@ import { hashPassword, comparePassword } from "../utils/Hashing.js";
 import { generateToken, generateRefreshToken } from "../utils/Token.js";
 import { validateEmail, validatePassword } from "../utils/Validation.js";
 import { handleError } from "../utils/Handling.js";
-import { sendEmail } from "../utils/EmailService.js";
+import { sendEmail, sendOtp } from "../utils/EmailService.js";
 import logger from "../utils/Logger.js";
 import { generateOTP } from "../utils/OTP.js";
 export const register = async (req, res) => {
@@ -130,7 +130,11 @@ export const requestPasswordReset = async (req, res) => {
       data: { otp },
     });
 
-    sendEmail(email, "Password Reset OTP", "resetPasswordEmail.html", { otp });
+    // Kirim email dengan otp dan username
+    sendOtp(email, "Password Reset OTP", "resetPasswordEmail.html", {
+      otp,
+      username: user.username,
+    });
 
     res.status(200).json({ msg: "OTP sent to your email" });
   } catch (error) {
