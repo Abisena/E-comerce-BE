@@ -5,6 +5,7 @@ import { validateEmail, validatePassword } from "../utils/Validation.js";
 import { handleError } from "../utils/Handling.js";
 import { sendEmail } from "../utils/EmailService.js";
 import logger from "../utils/Logger.js";
+import { generateOTP } from "../utils/OTP.js";
 export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
@@ -107,5 +108,63 @@ export const logout = async (req, res) => {
     res
       .status(500)
       .json({ msg: "Failed to logout user", error: error.message });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const otp = generateOTP();
+
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { otp },
+    });
+
+    sendEmail(email, "Password Reset OTP", "resetPasswordEmail.html", { otp });
+
+    res.status(200).json({ msg: "OTP sent to your email" });
+  } catch (error) {
+    console.error(error);
+    handleError(error, res);
+  }
+};
+
+export const verifyOTPAndResetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    if (otp !== user.otp) {
+      return res.status(400).json({ msg: "Invalid OTP" });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { userId: user.userId },
+      data: { password: hashedPassword, otp: null },
+    });
+
+    res.status(200).json({ msg: "Password reset successful" });
+  } catch (error) {
+    console.error(error);
+    handleError(error, res);
   }
 };
